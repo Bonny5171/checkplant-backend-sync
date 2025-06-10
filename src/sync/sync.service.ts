@@ -5,76 +5,84 @@ import { PrismaService } from '../prisma/prisma.service';
 export class SyncService {
   constructor(private prisma: PrismaService) {}
 
-  async handlePush(payload: { plants: any[] }) {
-    const plants = payload.plants || [];
+  async handlePush(payload: { notes: any[] }) {
+    const notes = payload.notes || [];
 
-    if (!Array.isArray(plants)) {
-      throw new BadRequestException('plants deve ser um array');
+    if (!Array.isArray(notes)) {
+      throw new BadRequestException('notes deve ser um array');
     }
 
-    // Processar em paralelo para maior performance
     await Promise.all(
-      plants.map(async (plant) => {
-        // Validação básica updatedAt
-        if (!plant.updatedAt || isNaN(Date.parse(plant.updatedAt))) {
-          throw new BadRequestException('Cada planta deve ter updatedAt válido');
+      notes.map(async (note) => {
+        if (!note.updatedAt || isNaN(Date.parse(note.updatedAt))) {
+          throw new BadRequestException('Cada nota deve ter um updatedAt válido');
         }
 
-        if (plant.id) {
-          const existing = await this.prisma.plant.findUnique({ where: { id: plant.id } });
+        if (note.id) {
+          const existing = await this.prisma.notes.findUnique({ where: { id: note.id } });
 
-          if (!existing || new Date(plant.updatedAt) > existing.updatedAt) {
-            await this.prisma.plant.upsert({
-              where: { id: plant.id },
+          if (!existing || new Date(note.updatedAt) > existing.updatedAt) {
+            await this.prisma.notes.upsert({
+              where: { id: note.id },
               update: {
-                name: plant.name,
-                updatedAt: new Date(plant.updatedAt),
-                // outros campos se tiver
+                note: note.note,
+                latitude: note.latitude,
+                longitude: note.longitude,
+                // updatedAt é gerenciado automaticamente pelo Prisma
               },
               create: {
-                id: plant.id,
-                name: plant.name,
-                updatedAt: new Date(plant.updatedAt),
-                createdAt: plant.createdAt ? new Date(plant.createdAt) : new Date(),
-                // outros campos se tiver
+                id: note.id,
+                note: note.note,
+                latitude: note.latitude,
+                longitude: note.longitude,
+                createdAt: note.createdAt ? new Date(note.createdAt) : new Date(),
+                // updatedAt não precisa ser enviado manualmente
               },
             });
           }
         } else {
-          // Sem id, cria nova planta
-          await this.prisma.plant.create({
+          await this.prisma.notes.create({
             data: {
-              name: plant.name,
-              updatedAt: new Date(plant.updatedAt),
-              createdAt: plant.createdAt ? new Date(plant.createdAt) : new Date(),
-              // outros campos se tiver
+              note: note.note,
+              latitude: note.latitude,
+              longitude: note.longitude,
+              createdAt: note.createdAt ? new Date(note.createdAt) : new Date(),
+              // updatedAt é automático
             },
           });
         }
       }),
     );
 
-    return { status: 'ok', processed: plants.length };
+    return { status: 'ok', processed: notes.length };
   }
 
-  async handlePull(lastPulledAt?: string) {
+  async handlePull(lastPulledAt?: string | number) {
     let where = {};
 
     if (lastPulledAt) {
-      const date = new Date(lastPulledAt);
+      // Garante que o valor esteja no formato numérico
+      const timestamp = Number(lastPulledAt);
+      if (isNaN(timestamp)) {
+        throw new BadRequestException('lastPulledAt inválido');
+      }
+
+      const date = new Date(timestamp);
       if (isNaN(date.getTime())) {
         throw new BadRequestException('lastPulledAt inválido');
       }
-      where = { updatedAt: { gt: date } };
+
+      where = {
+        updatedAt: { gt: date },
+      };
     }
 
-    // opcional: limite de registros para não sobrecarregar resposta
-    const updatedPlants = await this.prisma.plant.findMany({
+    const updatedNotes = await this.prisma.notes.findMany({
       where,
       orderBy: { updatedAt: 'asc' },
-      take: 1000, // limite arbitrário
+      take: 1000,
     });
 
-    return { plants: updatedPlants };
+    return { notes: updatedNotes };
   }
 }

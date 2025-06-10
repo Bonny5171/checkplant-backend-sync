@@ -13,10 +13,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Plant {
+model Notes {
   id        Int      @id @default(autoincrement())
-  name      String
+  note      String
+  latitude  String
+  longitude String
+  datetime  DateTime @default(now())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  deletedAt DateTime?  // opcional para soft-delete
 }
