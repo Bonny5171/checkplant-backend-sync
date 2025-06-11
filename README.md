@@ -36,6 +36,21 @@ Utilizado Docker para prover Postgresql.
 docker-compose up
 ```
 
+Após docker up, garantir acesso ao banco
+```
+///.env
+DATABASE_URL="postgresql://nestuser:nestpass@localhost:5432/nestdb"
+
+or
+
+export DATABASE_URL="postgresql://nestuser:nestpass@localhost:5432/nestdb"
+```
+
+Rodar migrations com ajuda do Prisma
+```
+npx prisma migrate dev --name init
+```
+
 
 Instala as dependencias
 ```bash
