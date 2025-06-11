@@ -47,6 +47,7 @@ export DATABASE_URL="postgresql://nestuser:nestpass@localhost:5432/nestdb"
 ```
 
 Rodar migrations com ajuda do Prisma
+!Atenção! Roda somente a primeira vez, se as tabelas ja foram migradas, pular para o proximo passo.
 ```
 npx prisma migrate dev --name init
 ```
