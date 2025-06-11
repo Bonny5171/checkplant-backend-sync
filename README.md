@@ -23,11 +23,15 @@
 
 ## Description
 
-Aplicação back-end desenvolvida com nodeJS + nestJS + postgresql-(Docker).
+Aplicação back-end desenvolvida:
+- [NodeJS](https://nodejs.org)
+- [Nest](https://nestjs.com) framework TypeScript starter repository.
+- [Postgresql](https://www.postgresql.org/)
+- [Docker](https://www.docker.com/)
+
+  
 Essa aplicação tem como objetivo persistir os dados vindo do app mobile: (https://github.com/Bonny5171/checkplant_moleskine_app)
 
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
 ## Project setup
 
