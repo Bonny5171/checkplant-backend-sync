@@ -25,14 +25,14 @@ export class SyncService {
             await this.prisma.notes.upsert({
               where: { id: note.id },
               update: {
-                note: note.note,
+                annotation: note.annotation,
                 latitude: note.latitude,
                 longitude: note.longitude,
                 // updatedAt é gerenciado automaticamente pelo Prisma
               },
               create: {
                 id: note.id,
-                note: note.note,
+                annotation: note.annotation,
                 latitude: note.latitude,
                 longitude: note.longitude,
                 createdAt: note.createdAt ? new Date(note.createdAt) : new Date(),
@@ -43,7 +43,7 @@ export class SyncService {
         } else {
           await this.prisma.notes.create({
             data: {
-              note: note.note,
+              annotation: note.annotation,
               latitude: note.latitude,
               longitude: note.longitude,
               createdAt: note.createdAt ? new Date(note.createdAt) : new Date(),
