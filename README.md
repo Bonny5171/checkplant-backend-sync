@@ -37,6 +37,7 @@ docker-compose up
 ```
 
 
+Instala as dependencias
 ```bash
 $ npm install
 ```
