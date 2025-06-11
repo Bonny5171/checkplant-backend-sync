@@ -31,6 +31,12 @@ Essa aplicação tem como objetivo persistir os dados vindo do app mobile: (http
 
 ## Project setup
 
+Utilizado Docker para prover Postgresql.
+```
+docker-compose up
+```
+
+
 ```bash
 $ npm install
 ```
