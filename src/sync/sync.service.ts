@@ -15,11 +15,15 @@ export class SyncService {
     await Promise.all(
       notes.map(async (note) => {
         if (!note.updatedAt || isNaN(Date.parse(note.updatedAt))) {
-          throw new BadRequestException('Cada nota deve ter um updatedAt válido');
+          throw new BadRequestException(
+            'Cada nota deve ter um updatedAt válido',
+          );
         }
 
         if (note.id) {
-          const existing = await this.prisma.notes.findUnique({ where: { id: note.id } });
+          const existing = await this.prisma.notes.findUnique({
+            where: { id: note.id },
+          });
 
           if (!existing || new Date(note.updatedAt) > existing.updatedAt) {
             await this.prisma.notes.upsert({
@@ -35,7 +39,9 @@ export class SyncService {
                 annotation: note.annotation,
                 latitude: note.latitude,
                 longitude: note.longitude,
-                createdAt: note.createdAt ? new Date(note.createdAt) : new Date(),
+                createdAt: note.createdAt
+                  ? new Date(note.createdAt)
+                  : new Date(),
                 // updatedAt não precisa ser enviado manualmente
               },
             });
