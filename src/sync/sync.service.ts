@@ -1,15 +1,19 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class SyncService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private mailService: MailService,
+  ) {}
 
   async handlePush(payload: { notes: any[] }) {
     const notes = payload.notes || [];
 
      console.log('TAMANHO DO ARRAY', notes.length);
-     console.log('>> EMAIL >>', notes[0].email);
+     console.log('>> EMAIL >>', notes[0].email_key);
 
     if (!Array.isArray(notes)) {
       throw new BadRequestException('notes deve ser um array');
@@ -60,6 +64,11 @@ export class SyncService {
               // updatedAt é automático
             },
           });
+        }
+
+        // depois do upsert
+        if (note.email_key) {
+          // await this.mailService.sendConfirmationEmail(note);
         }
       }),
     );
