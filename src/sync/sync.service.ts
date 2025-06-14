@@ -12,9 +12,6 @@ export class SyncService {
   async handlePush(payload: { notes: any[] }) {
     const notes = payload.notes || [];
 
-     console.log('TAMANHO DO ARRAY', notes.length);
-     console.log('>> EMAIL >>', notes[0].email_key);
-
     if (!Array.isArray(notes)) {
       throw new BadRequestException('notes deve ser um array');
     }
@@ -68,7 +65,7 @@ export class SyncService {
 
         // depois do upsert
         if (note.email_key) {
-          // await this.mailService.sendConfirmationEmail(note);
+          this.mailService.sendConfirmationEmail(note);
         }
       }),
     );
