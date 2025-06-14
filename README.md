@@ -44,6 +44,10 @@ Após docker up, garantir acesso ao banco
 ```
 ///.env
 DATABASE_URL="postgresql://nestuser:nestpass@localhost:5432/nestdb"
+SMTP="smtp.gmail.com"  // Colocar o seu smtp se n for gmail
+PORT=587
+EMAIL_USER=[usuario]
+EMAIL_PASS=[senha aqui]
 
 or
 
