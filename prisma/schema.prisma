@@ -14,7 +14,7 @@ datasource db {
 }
 
 model Notes {
-  id        Int      @id @default(autoincrement())
+  id         String   @id
   annotation String
   latitude  String
   longitude String

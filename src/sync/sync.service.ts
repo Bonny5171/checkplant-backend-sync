@@ -8,6 +8,9 @@ export class SyncService {
   async handlePush(payload: { notes: any[] }) {
     const notes = payload.notes || [];
 
+     console.log('TAMANHO DO ARRAY', notes.length);
+     console.log('>> EMAIL >>', notes[0].email);
+
     if (!Array.isArray(notes)) {
       throw new BadRequestException('notes deve ser um array');
     }
@@ -49,6 +52,7 @@ export class SyncService {
         } else {
           await this.prisma.notes.create({
             data: {
+              id: note.id,
               annotation: note.annotation,
               latitude: note.latitude,
               longitude: note.longitude,
